@@ -1,4 +1,3 @@
-
 async function getDets() {
     let randPage = Math.floor(1 + Math.random() * 100)
     const apiKey = '6abcb6bb99fb77f33c37016a28866ed2';
@@ -283,7 +282,8 @@ function streamDownload() {
 }
 
 function copyStreamLink() {
-  const linkToCopy = streamlink.toLowerCase();
+  // স্ট্রিম লিঙ্ক কপি করুন (ডাউনলোড লিঙ্ক নয়)
+  const linkToCopy = videolink;
 
   if (!navigator.clipboard) {
     navigator.clipboard = {
@@ -316,4 +316,3 @@ function copyStreamLink() {
       alert('Failed to copy link. Please try manually.');
     });
 }
-
