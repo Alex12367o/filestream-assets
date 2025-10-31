@@ -1,35 +1,3 @@
-async function getDets() {
-    let randPage = Math.floor(1 + Math.random() * 100)
-    const apiKey = '6abcb6bb99fb77f33c37016a28866ed2';
-    let apiArr = [`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=hin-US&page=${randPage}`, `https://api.themoviedb.org/3/trending/movie/day?api_key=${apiKey}&language=hin-US&page=${randPage}`, `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=hin-US&page=${randPage}`]
-    let ArrRanIndex = Math.floor(Math.random() * apiArr.length)
-    let apiUrl = apiArr[ArrRanIndex]
-    let movieCont = document.querySelector('.movieSug')
-    let img = document.querySelector('.movieimg img')
-    let movieDets = document.querySelector('.movieDets')
-    let movieDetsMini = document.querySelector('.movieDets-mini')
-    let data = await fetch(apiUrl)
-    let resData = await data.json()
-    let ranIndex = Math.floor(Math.random() * resData.results.length)
-    let movie = resData.results[ranIndex]
-    movieDets.innerHTML = `
-    <h3>Must-see blockbuster film!</h3>
-    <h4><span>Title:</span> ${movie.title}</h4>
-                        <h4><span>movie overview:</span> ${movie.overview}</h4>
-                        <h4><span>Release Date:</span> ${movie.release_date}</h4>
-                        <h4><span>Rating:</span> ${movie.vote_average.toFixed(1)} / 10</h4>
-    `
-    movieDetsMini.innerHTML = `
-                <h3><span>Title:</span> ${movie.title}</h3>
-                <h3><span>Release Date:</span> ${movie.release_date}</h3>
-                <h3><span>Rating:</span> ${movie.vote_average.toFixed(1)} / 10</h3>
-        `
-    img.src = `https://image.tmdb.org/t/p/w1280/${movie.poster_path}`
-    movieCont.style.backgroundImage = `url(https://image.tmdb.org/t/p/w1280/${movie.backdrop_path})`;
-}
-window.addEventListener("load", getDets())
-
-
 
 let homeBtn = document.querySelector(".home-btn")
 let abtBtn = document.querySelector(".about-btn")
