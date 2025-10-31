@@ -250,8 +250,9 @@ function streamDownload() {
 }
 
 function copyStreamLink() {
-  // স্ট্রিম লিঙ্ক কপি করুন (ডাউনলোড লিঙ্ক নয়)
-  const linkToCopy = videolink;
+  // সবসময় স্ট্রিম লিঙ্ক কপি করতে হবে
+  let currentLink = window.location.href;
+  let streamLinkToCopy = currentLink.replace("/dl/", "/watch/");
 
   if (!navigator.clipboard) {
     navigator.clipboard = {
@@ -274,7 +275,7 @@ function copyStreamLink() {
     };
   }
 
-  navigator.clipboard.writeText(linkToCopy)
+  navigator.clipboard.writeText(streamLinkToCopy)
     .then(() => {
       console.log('Stream link copied to clipboard!');
       alert('Stream link copied successfully!');
@@ -283,4 +284,4 @@ function copyStreamLink() {
       console.error('Failed to copy link: ', err);
       alert('Failed to copy link. Please try manually.');
     });
-}
+        }
