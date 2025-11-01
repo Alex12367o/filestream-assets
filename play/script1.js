@@ -69,7 +69,7 @@ async function getDets() {
 }
 
 async function watchNow() {
-  const bloggerJsonUrl = "https://itachifilestreem.blogspot.com/feeds/posts/default/-/movie?alt=json";
+  const bloggerJsonUrl = "https://filestreeambroadcast.blogspot.com/feeds/posts/default/-/movie?alt=json";
 
   try {
     const res = await fetch(bloggerJsonUrl);
