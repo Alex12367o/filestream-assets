@@ -1,72 +1,111 @@
-// --- Remote Controlled Movie System from Blogger ---
 async function getDets() {
-    try {
-        // তোমার Blogger JSON পোস্ট লিংক (Label: movie)
-        const bloggerJsonUrl = "https://itachifilestreem.blogspot.com/feeds/posts/default/-/movie?alt=json";
+  const bloggerJsonUrl = "https://itachifilestreem.blogspot.com/feeds/posts/default/-/movie?alt=json";
 
-        const res = await fetch(bloggerJsonUrl);
-        const rawData = await res.json();
+  try {
+    const res = await fetch(bloggerJsonUrl);
+    if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
 
-        // Blogger JSON content extract
-        let content = rawData.feed.entry[0].content.$t;
+    const rawData = await res.json();
 
-        // JSON টা পরিষ্কার করে পড়া
-        const data = JSON.parse(
-            content.replace(/<[^>]*>?/gm, '').replace(/\n/g, '').trim()
-        );
-
-        // DOM elements select করা
-        let movieCont = document.querySelector('.movieSug');
-        let img = document.querySelector('.movieimg img');
-        let movieDets = document.querySelector('.movieDets');
-        let movieDetsMini = document.querySelector('.movieDets-mini');
-
-        // HTML update করা (design ঠিক রেখে)
-        movieDets.innerHTML = `
-            <h3>Featured Movie</h3>
-            <h4><span>Title:</span> ${data.title}</h4>
-            <h4><span>Release Date:</span> ${data.release_date}</h4>
-            <h4><span>Rating:</span> ${data.rating}</h4>
-        `;
-
-        movieDetsMini.innerHTML = `
-            <h3><span>Title:</span> ${data.title}</h3>
-            <h3><span>Release Date:</span> ${data.release_date}</h3>
-            <h3><span>Rating:</span> ${data.rating}</h3>
-        `;
-
-        img.src = data.poster;
-        movieCont.style.backgroundImage = `url(${data.poster})`;
-
-        console.log("Movie details loaded successfully from Blogger!");
-    } catch (error) {
-        console.error("Error fetching Blogger JSON:", error);
-        alert("Failed to load movie details. Please check your Blogger JSON link.");
+    // যদি কোনো পোস্ট না থাকে
+    if (!rawData.feed?.entry || rawData.feed.entry.length === 0) {
+      throw new Error("No movie entries found in Blogger feed.");
     }
+
+    // Blogger post content নেয়া
+    let content = rawData.feed.entry[0]?.content?.$t || "";
+
+    // JSON এক্সট্রাক্ট করা (HTML বা ট্যাগ বাদ দিয়ে)
+    const clean = content
+      .replace(/<\/?[^>]+(>|$)/g, "") // remove HTML tags
+      .replace(/&[a-z]+;/gi, "") // remove HTML entities
+      .replace(/\n|\r/g, "") // remove line breaks
+      .trim();
+
+    // ভিতরে থাকা JSON detect করা
+    const jsonStart = clean.indexOf("{");
+    const jsonEnd = clean.lastIndexOf("}");
+    if (jsonStart === -1 || jsonEnd === -1) {
+      throw new Error("No valid JSON found inside Blogger content.");
+    }
+
+    const jsonStr = clean.slice(jsonStart, jsonEnd + 1);
+    const data = JSON.parse(jsonStr);
+
+    // DOM elements
+    const movieCont = document.querySelector(".movieSug");
+    const img = document.querySelector(".movieimg img");
+    const movieDets = document.querySelector(".movieDets");
+    const movieDetsMini = document.querySelector(".movieDets-mini");
+
+    // Fallback values
+    const title = data.title || "Unknown Title";
+    const release = data.release_date || "N/A";
+    const rating = data.rating || "Not Rated";
+    const poster = data.poster || "https://via.placeholder.com/300x450?text=No+Poster";
+
+    // Update UI
+    movieDets.innerHTML = `
+      <h3>Featured Movie</h3>
+      <h4><span>Title:</span> ${title}</h4>
+      <h4><span>Release Date:</span> ${release}</h4>
+      <h4><span>Rating:</span> ${rating}</h4>
+    `;
+
+    movieDetsMini.innerHTML = `
+      <h3><span>Title:</span> ${title}</h3>
+      <h3><span>Release Date:</span> ${release}</h3>
+      <h3><span>Rating:</span> ${rating}</h3>
+    `;
+
+    img.src = poster;
+    movieCont.style.backgroundImage = `url(${poster})`;
+
+    console.log("Movie details loaded successfully from Blogger!");
+  } catch (error) {
+    console.error("Error fetching Blogger JSON:", error);
+    alert("Failed to load movie details. Blogger feed might be malformed or unavailable.");
+  }
 }
 
-// পেজ লোড হলে movie details লোড হবে
-window.addEventListener("load", getDets);
-
-// --- Watch Now Button Function ---
 async function watchNow() {
-    try {
-        const bloggerJsonUrl = "https://itachifilestreem.blogspot.com/feeds/posts/default/-/movie?alt=json";
-        const res = await fetch(bloggerJsonUrl);
-        const rawData = await res.json();
-        let content = rawData.feed.entry[0].content.$t;
-        const data = JSON.parse(
-            content.replace(/<[^>]*>?/gm, '').replace(/\n/g, '').trim()
-        );
+  const bloggerJsonUrl = "https://itachifilestreem.blogspot.com/feeds/posts/default/-/movie?alt=json";
 
-        // 🎬 ১ সেকেন্ড delay দিয়ে watch_link এ redirect করবে
-        setTimeout(() => {
-            window.location.href = data.watch_link;
-        }, 1000);
-    } catch (error) {
-        console.error("Error redirecting to watch link:", error);
-        alert("Couldn't open movie link. Check Blogger JSON.");
+  try {
+    const res = await fetch(bloggerJsonUrl);
+    if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+
+    const rawData = await res.json();
+    if (!rawData.feed?.entry || rawData.feed.entry.length === 0) {
+      throw new Error("No movie entries found in Blogger feed.");
     }
+
+    let content = rawData.feed.entry[0]?.content?.$t || "";
+    const clean = content
+      .replace(/<\/?[^>]+(>|$)/g, "")
+      .replace(/&[a-z]+;/gi, "")
+      .replace(/\n|\r/g, "")
+      .trim();
+
+    const jsonStart = clean.indexOf("{");
+    const jsonEnd = clean.lastIndexOf("}");
+    if (jsonStart === -1 || jsonEnd === -1) {
+      throw new Error("No valid JSON found inside Blogger content.");
+    }
+
+    const jsonStr = clean.slice(jsonStart, jsonEnd + 1);
+    const data = JSON.parse(jsonStr);
+
+    if (!data.watch_link) throw new Error("Watch link missing in Blogger JSON.");
+
+    // Redirect
+    console.log("Redirecting to watch link:", data.watch_link);
+    window.location.href = data.watch_link;
+
+  } catch (error) {
+    console.error("Error redirecting to watch link:", error);
+    alert("Couldn't open movie link. Please check Blogger JSON content.");
+  }
 }
 
 let homeBtn = document.querySelector(".home-btn")
