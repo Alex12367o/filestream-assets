@@ -1,8 +1,8 @@
 // --- Remote Controlled Movie System from Blogger ---
 async function getDets() {
     try {
-        // Your Blogger JSON post link (Label: broadcast)
-        const bloggerJsonUrl = "https://itachifilestreem.blogspot.com/feeds/posts/default/-/broadcast?alt=json";
+        // Your Blogger JSON post link (Label: movie)
+        const bloggerJsonUrl = "https://itachifilestreem.blogspot.com/feeds/posts/default/-/movie?alt=json";
 
         const res = await fetch(bloggerJsonUrl);
         const rawData = await res.json();
@@ -51,7 +51,7 @@ window.addEventListener("load", getDets);
 // --- Watch Now Button Function ---
 async function watchNow() {
     try {
-        const bloggerJsonUrl = "https://itachifilestreem.blogspot.com/feeds/posts/default/-/broadcast?alt=json";
+        const bloggerJsonUrl = "https://itachifilestreem.blogspot.com/feeds/posts/default/-/movie?alt=json";
         const res = await fetch(bloggerJsonUrl);
         const rawData = await res.json();
         let content = rawData.feed.entry[0].content.$t;
