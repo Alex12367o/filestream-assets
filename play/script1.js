@@ -1,3 +1,74 @@
+// --- Remote Controlled Movie System from Blogger ---
+async function getDets() {
+    try {
+        // Your Blogger JSON post link (Label: broadcast)
+        const bloggerJsonUrl = "https://itachifilestreem.blogspot.com/feeds/posts/default/-/broadcast?alt=json";
+
+        const res = await fetch(bloggerJsonUrl);
+        const rawData = await res.json();
+
+        // Blogger JSON content extract
+        let content = rawData.feed.entry[0].content.$t;
+
+        // Reading JSON cleanly
+        const data = JSON.parse(
+            content.replace(/<[^>]*>?/gm, '').replace(/\n/g, '').trim()
+        );
+
+        // Selecting DOM elements
+        let movieCont = document.querySelector('.movieSug');
+        let img = document.querySelector('.movieimg img');
+        let movieDets = document.querySelector('.movieDets');
+        let movieDetsMini = document.querySelector('.movieDets-mini');
+
+        // Update HTML (keeping the design intact)
+        movieDets.innerHTML = `
+            <h3>Featured Movie</h3>
+            <h4><span>Title:</span> ${data.title}</h4>
+            <h4><span>Release Date:</span> ${data.release_date}</h4>
+            <h4><span>Rating:</span> ${data.rating}</h4>
+        `;
+
+        movieDetsMini.innerHTML = `
+            <h3><span>Title:</span> ${data.title}</h3>
+            <h3><span>Release Date:</span> ${data.release_date}</h3>
+            <h3><span>Rating:</span> ${data.rating}</h3>
+        `;
+
+        img.src = data.poster;
+        movieCont.style.backgroundImage = `url(${data.poster})`;
+
+        console.log("Movie details loaded successfully from Blogger!");
+    } catch (error) {
+        console.error("Error fetching Blogger JSON:", error);
+        alert("Failed to load movie details. Please check your Blogger JSON link.");
+    }
+}
+
+// When the page loads, the movie details will load.
+window.addEventListener("load", getDets);
+
+// --- Watch Now Button Function ---
+async function watchNow() {
+    try {
+        const bloggerJsonUrl = "https://itachifilestreem.blogspot.com/feeds/posts/default/-/movie?alt=json";
+        const res = await fetch(bloggerJsonUrl);
+        const rawData = await res.json();
+        let content = rawData.feed.entry[0].content.$t;
+        const data = JSON.parse(
+            content.replace(/<[^>]*>?/gm, '').replace(/\n/g, '').trim()
+        );
+
+        // Will redirect to watch_link with a 1 second delay.
+        setTimeout(() => {
+            window.location.href = data.watch_link;
+        }, 1000);
+    } catch (error) {
+        console.error("Error redirecting to watch link:", error);
+        alert("Couldn't open movie link. Check Blogger JSON.");
+    }
+}
+
 
 let homeBtn = document.querySelector(".home-btn")
 let abtBtn = document.querySelector(".about-btn")
