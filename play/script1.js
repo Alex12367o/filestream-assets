@@ -1,7 +1,7 @@
 // --- Remote Controlled Movie System from Blogger ---
 async function getDets() {
     try {
-        // Your Blogger JSON post link (Label: movie)
+        // তোমার Blogger JSON পোস্ট লিংক (Label: movie)
         const bloggerJsonUrl = "https://itachifilestreem.blogspot.com/feeds/posts/default/-/movie?alt=json";
 
         const res = await fetch(bloggerJsonUrl);
@@ -10,18 +10,18 @@ async function getDets() {
         // Blogger JSON content extract
         let content = rawData.feed.entry[0].content.$t;
 
-        // Reading JSON cleanly
+        // JSON টা পরিষ্কার করে পড়া
         const data = JSON.parse(
             content.replace(/<[^>]*>?/gm, '').replace(/\n/g, '').trim()
         );
 
-        // Selecting DOM elements
+        // DOM elements select করা
         let movieCont = document.querySelector('.movieSug');
         let img = document.querySelector('.movieimg img');
         let movieDets = document.querySelector('.movieDets');
         let movieDetsMini = document.querySelector('.movieDets-mini');
 
-        // Update HTML (keeping the design intact)
+        // HTML update করা (design ঠিক রেখে)
         movieDets.innerHTML = `
             <h3>Featured Movie</h3>
             <h4><span>Title:</span> ${data.title}</h4>
@@ -45,7 +45,7 @@ async function getDets() {
     }
 }
 
-// When the page loads, the movie details will load.
+// পেজ লোড হলে movie details লোড হবে
 window.addEventListener("load", getDets);
 
 // --- Watch Now Button Function ---
@@ -59,7 +59,7 @@ async function watchNow() {
             content.replace(/<[^>]*>?/gm, '').replace(/\n/g, '').trim()
         );
 
-        // Will redirect to watch_link with a 1 second delay.
+        // 🎬 ১ সেকেন্ড delay দিয়ে watch_link এ redirect করবে
         setTimeout(() => {
             window.location.href = data.watch_link;
         }, 1000);
@@ -68,7 +68,6 @@ async function watchNow() {
         alert("Couldn't open movie link. Check Blogger JSON.");
     }
 }
-
 
 let homeBtn = document.querySelector(".home-btn")
 let abtBtn = document.querySelector(".about-btn")
