@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FileStreamBot | {{file_name}}</title>
+    <link rel="icon" href="https://files.catbox.moe/muxd6d.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #7209b7;
+            --dark: #0a0a0a;
+            --darker: #000000;
+            --light: #f8f9fa;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --gray: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            background: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+        
+        /* Header */
+        header {
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(15px);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo i {
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(67, 97, 238, 0.15);
+            color: var(--success);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 32px 0;
+        }
+        
+        .section {
+            background: rgba(20, 20, 20, 0.9);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Video Player */
+        .video-wrapper {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background: #000;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .video-wrapper video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .file-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .info-card {
+            background: rgba(30, 30, 30, 0.8);
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .info-card i {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-right: 12px;
+        }
+        
+        .info-card strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--success);
+        }
+        
+        .info-card span {
+            word-break: break-all;
+            font-size: 0.95rem;
+        }
+        
+        /* Section Titles */
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--success);
+            text-align: center;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+        }
+        
+        /* Content */
+        .content {
+            line-height: 1.7;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .highlight {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .content a {
+            color: var(--success);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .content a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        
+        /* Channels Grid */
+        .channels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .channel-card {
+            background: rgba(30, 30, 30, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+            display: block;
+        }
+        
+        .channel-card:hover {
+            background: rgba(40, 40, 40, 0.9);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+        
+        .channel-card i {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+        
+        .channel-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: var(--light);
+        }
+        
+        .channel-card p {
+            font-size: 0.95rem;
+            color: var(--gray);
+            margin: 0;
+        }
+        
+        /* Contact Button */
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(30, 30, 30, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 32px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .contact-btn:hover {
+            background: rgba(40, 40, 40, 0.9);
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(10, 10, 10, 0.98);
+            padding: 32px 0;
+            margin-top: 32px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 1.3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+            border-color: var(--primary);
+        }
+        
+        .copyright {
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        
+        .copyright a {
+            color: var(--success);
+            text-decoration: none;
+        }
+        
+        .copyright a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 12px;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .nav-links {
+                justify-content: center;
+            }
+            
+            .nav-links a {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .section {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .file-info {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .channels-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .channel-card {
+                padding: 20px 16px;
+            }
+            
+            .section-title {
+                font-size: 1.6rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 8px;
+            }
+            
+            .main-content {
+                padding: 24px 0;
+            }
+            
+            .section {
+                padding: 16px;
+                border-radius: 12px;
+            }
+            
+            .nav-links {
+                gap: 4px;
+            }
+            
+            .nav-links a {
+                padding: 6px 10px;
+                font-size: 0.85rem;
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+            }
+            
+            .logo i {
+                font-size: 1.5rem;
+            }
+            
+            .channel-card {
+                padding: 16px 12px;
+            }
+            
+            .channel-card i {
+                font-size: 2rem;
+            }
+            
+            .channel-card h3 {
+                font-size: 1.1rem;
+            }
+            
+            .contact-btn {
+                padding: 14px 24px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-24 {
+            margin-top: 24px;
+        }
+        
+        .mb-0 {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="navbar">
+                <a href="#" class="logo">
+                    <i class="fas fa-play-circle"></i>
+                    <span>FileStreamBot</span>
+                </a>
+                <div class="nav-links">
+                    <a href="#video-section"><i class="fas fa-play"></i> Play</a>
+                    <a href="#about"><i class="fas fa-info-circle"></i> About</a>
+                    <a href="#channels"><i class="fas fa-users"></i> Channels</a>
+                    <a href="#contact"><i class="fas fa-envelope"></i> Contact</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container main-content">
+        <!-- Video Section -->
+        <section id="video-section" class="section fade-in">
+            <div class="video-wrapper">
+                <video id="player" playsinline controls crossorigin>
+                    <source src="{{file_url}}" type="video/mp4" />
+                    <!-- Subtitle tracks will be added dynamically by JavaScript -->
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            
+            <div class="file-info">
+                <div class="info-card">
+                    <div>
+                        <i class="fas fa-file-video"></i>
+                        <strong>File Name:</strong>
+                        <span id="fileName">{{file_name}}</span>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div>
+                        <i class="fas fa-weight-hanging"></i>
+                        <strong>File Size:</strong>
+                        <span>{{file_size}}</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- About Section -->
+        <section id="about" class="section fade-in delay-1">
+            <h2 class="section-title">About FileStreamBot</h2>
+            <div class="content">
+                <p>Welcome to our <span class="highlight">File Stream Bot</span>, a powerful Telegram bot designed to stream <span class="highlight">movies</span> and <span class="highlight">series</span> directly on Telegram.</p>
+                <p>This bot is developed by <a href="https://github.com/AviPatilPro" class="highlight">Avishkar Patil</a> with a focus on user experience and performance.</p>
+                <p class="mb-0">If you enjoy using this bot, please share it with your friends and family!</p>
+            </div>
+        </section>
+        
+        <!-- Channels Section -->
+        <section id="channels" class="section fade-in delay-2">
+            <h2 class="section-title">Our Telegram Channels</h2>
+            <p class="content">Join our Telegram channels for more content and updates:</p>
+            
+            <div class="channels-grid">
+                <a href="https://t.me/CheapieDeals" class="channel-card" target="_blank">
+                    <i class="fas fa-tags"></i>
+                    <h3>Cheap Deals</h3>
+                    <p>Best deals and offers</p>
+                </a>
+                <a href="https://t.me/FilmyPixel" class="channel-card" target="_blank">
+                    <i class="fas fa-film"></i>
+                    <h3>FilmyPixel</h3>
+                    <p>Movies and entertainment</p>
+                </a>
+                <a href="https://t.me/PostersZone" class="channel-card" target="_blank">
+                    <i class="fas fa-images"></i>
+                    <h3>Posters Zone</h3>
+                    <p>Movie posters and art</p>
+                </a>
+                <a href="https://t.me/EpitomeQuality" class="channel-card" target="_blank">
+                    <i class="fas fa-star"></i>
+                    <h3>Epitome Quality</h3>
+                    <p>High-quality content</p>
+                </a>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact" class="section fade-in delay-3">
+            <h2 class="section-title">Contact Us</h2>
+            <p class="content">Report bugs or contact us directly on Telegram:</p>
+            
+            <div class="text-center mt-24">
+                <a href="https://t.me/AvishkarPatil" class="contact-btn" target="_blank">
+                    <i class="fab fa-telegram"></i>
+                    <span>Contact on Telegram</span>
+                </a>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="social-links">
+                    <a href="https://t.me/AvishkarPatil" target="_blank"><i class="fab fa-telegram"></i></a>
+                    <a href="https://github.com/AviPatilPro" target="_blank"><i class="fab fa-github"></i></a>
+                </div>
+                <div class="copyright">
+                    <p>Copyright © 2024 <a href="https://github.com/AviPatilPro">Avishkar Patil</a>. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+    <script>
+        // Add video quality selector with CC and language options
+        const player = new Plyr('#player', {
+            controls: [
+                'play-large',
+                'play',
+                'progress',
+                'current-time',
+                'duration',
+                'mute',
+                'volume',
+                'captions',
+                'settings',
+                'pip',
+                'fullscreen'
+            ],
+            ratio: '16:9',
+            quality: {
+                default: 720,
+                options: [4320, 2880, 2160, 1440, 1080, 720, 576, 480, 360, 240]
+            },
+            captions: {
+                active: true,
+                language: 'en',
+                update: true
+            },
+            i18n: {
+                audio: 'Audio',
+                captions: 'Subtitles',
+                quality: 'Quality',
+                speed: 'Speed',
+                normal: 'Normal',
+                disabled: 'Disabled',
+                enabled: 'Enabled'
+            }
+        });
+
+        // All requested language subtitle tracks
+        const subtitleTracks = [
+            {
+                kind: 'captions',
+                label: 'English',
+                srclang: 'en',
+                src: '{{file_url}}.en.vtt',
+                default: true
+            },
+            {
+                kind: 'captions',
+                label: 'Japanese - 日本語',
+                srclang: 'ja',
+                src: '{{file_url}}.ja.vtt'
+            },
+            {
+                kind: 'captions',
+                label: 'Hindi - हिन्दी',
+                srclang: 'hi',
+                src: '{{file_url}}.hi.vtt'
+            },
+            {
+                kind: 'captions',
+                label: 'Tamil - தமிழ்',
+                srclang: 'ta',
+                src: '{{file_url}}.ta.vtt'
+            },
+            {
+                kind: 'captions',
+                label: 'Telugu - తెలుగు',
+                srclang: 'te',
+                src: '{{file_url}}.te.vtt'
+            },
+            {
+                kind: 'captions',
+                label: 'Kannada - ಕನ್ನಡ',
+                srclang: 'kn',
+                src: '{{file_url}}.kn.vtt'
+            },
+            {
+                kind: 'captions',
+                label: 'Malayalam - മലയാളം',
+                srclang: 'ml',
+                src: '{{file_url}}.ml.vtt'
+            },
+            {
+                kind: 'captions',
+                label: 'Bengali - বাংলা',
+                srclang: 'bn',
+                src: '{{file_url}}.bn.vtt'
+            },
+            {
+                kind: 'captions',
+                label: 'Subtitles Off',
+                srclang: 'off',
+                src: ''
+            }
+        ];
+
+        // Function to add subtitle tracks
+        function addSubtitleTracks() {
+            const videoElement = document.querySelector('#player');
+            
+            // Clear existing tracks
+            const existingTracks = videoElement.querySelectorAll('track');
+            existingTracks.forEach(track => track.remove());
+            
+            // Add new tracks
+            subtitleTracks.forEach(track => {
+                const trackElement = document.createElement('track');
+                trackElement.kind = track.kind;
+                trackElement.label = track.label;
+                trackElement.srclang = track.srclang;
+                
+                if (track.src && track.src !== '') {
+                    trackElement.src = track.src;
+                }
+                
+                if (track.default) {
+                    trackElement.default = true;
+                }
+                
+                videoElement.appendChild(trackElement);
+            });
+        }
+
+        // Initialize when player is ready
+        player.on('ready', () => {
+            addSubtitleTracks();
+            console.log('All subtitle tracks loaded:', subtitleTracks.length);
+        });
+
+        // Video loading state handling
+        player.on('loadstart', () => {
+            console.log('Video loading started...');
+        });
+
+        player.on('canplay', () => {
+            console.log('Video ready to play');
+        });
+
+        player.on('loadeddata', () => {
+            console.log('Video data loaded');
+        });
+
+        // Subtitle events
+        player.on('captionsenabled', () => {
+            console.log('Subtitles enabled');
+        });
+
+        player.on('captionsdisabled', () => {
+            console.log('Subtitles disabled');
+        });
+
+        player.on('languagechange', (event) => {
+            console.log('Language changed to:', event.detail.language);
+            const selectedTrack = subtitleTracks.find(track => track.srclang === event.detail.language);
+            if (selectedTrack) {
+                console.log('Selected subtitle:', selectedTrack.label);
+            }
+        });
+
+        // Quality change event
+        player.on('qualitychange', (event) => {
+            console.log('Quality changed to:', event.detail.quality);
+        });
+
+        // Error handling for subtitle tracks
+        player.on('trackerror', (event) => {
+            console.error('Subtitle track error:', event.detail);
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all sections for animation
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+        
+        // Handle video aspect ratio
+        function maintainVideoAspect() {
+            const video = document.getElementById('player');
+            const wrapper = document.querySelector('.video-wrapper');
+            
+            if (video.videoWidth && video.videoHeight) {
+                const aspectRatio = video.videoHeight / video.videoWidth;
+                wrapper.style.maxHeight = 'none';
+            }
+        }
+        
+        // Check when video metadata is loaded
+        document.getElementById('player').addEventListener('loadedmetadata', maintainVideoAspect);
+    </script>
+</body>
+</html>
